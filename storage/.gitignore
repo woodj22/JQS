@@ -1,2 +1,3 @@
 *
 !.gitignore
+!queue_positions.json
