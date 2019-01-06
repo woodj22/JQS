@@ -9,7 +9,7 @@ def clean_up_test_message(file_path):
     return False
 
 
-def test_queue_can_store_a_message_as_encoded_json_and_return_byte_position():
+def test_queue_can_store_a_message_as_encoded_json_and_byte_position():
 
     message = {
         'body': 'test body',
@@ -20,18 +20,22 @@ def test_queue_can_store_a_message_as_encoded_json_and_return_byte_position():
 
     filesystem = LocalFileSystem('storage')
 
-    message_info = Queue(filesystem).append_message_to_queue(queue_name, message)
-
-    file_exists = os.path.isfile(message_info[0])
-    with open(message_info[0], 'r+') as file:
-        file.seek(message_info[1])
-        line = file.readline()
-        # exit(line)
-        # assert line == json.(message)
-        # assert type(line) == str
-        file.close()
+    byte_position = Queue(filesystem).append_message_to_queue(queue_name, message)
+    file_path = filesystem.queue_storage_key(queue_name)
+    file_exists = os.path.isfile(file_path)
 
     assert file_exists is True
+
+    with open(file_path, 'r+') as file:
+        file.seek(byte_position)
+        line = file.readline()
+        assert type(line) == str
+
+        saved_message = json.loads(line)
+
+        assert message == saved_message
+
+        file.close()
 
 
 def test_queue_can_read_a_message_from_file_and_return_message():

@@ -9,7 +9,8 @@ class Queue:
     def append_message_to_queue(self, queue_name, message):
         queue_name, byte_position = self.file_adaptor.store(queue_name, message)
         self.write_queue_byte_position_to_file(queue_name, byte_position)
-        return
+
+        return byte_position
 
     def read_top_message_from_queue(self, queue_name, message):
         pass
@@ -25,8 +26,7 @@ class Queue:
             f.close()
         return True
 
-
-    def write_queue_byte_position_to_file(self, queue_name):
+    def read_queue_byte_position_to_file(self, queue_name):
         key = 'storage/queue_positions.json'
         with open(key, 'r+') as f:
             data = json.load(f)

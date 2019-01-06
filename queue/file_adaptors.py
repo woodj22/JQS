@@ -9,7 +9,7 @@ class LocalFileSystem(FileInterface):
         self._base_file_path = base_file_path
 
     def store(self, queue_name, content):
-        key = os.path.join(self.base_file_path, queue_name + ".txt")
+        key = self.queue_storage_key(queue_name)
 
         with open(key, 'a+') as file:
             byte_position = file.tell()
@@ -21,13 +21,15 @@ class LocalFileSystem(FileInterface):
         return queue_name, byte_position
 
     def read(self, queue_name, byte_position):
-        key = os.path.join(self.base_file_path, queue_name + ".txt")
+        key = self.queue_storage_key(queue_name)
         with open(key, 'r+') as file:
             file.seek(byte_position)
             line = file.readline()
             # exit(line)
             file.close()
 
+    def queue_storage_key(self, queue_name):
+        return os.path.join(self.base_file_path, queue_name + ".txt")
 
     @property
     def base_file_path(self):
