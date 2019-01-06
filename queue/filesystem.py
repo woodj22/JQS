@@ -7,4 +7,5 @@ class FileInterface:
     @abstractmethod
     def store(self, queue_name, content): raise NotImplementedError
 
-    # def update_queue_position
+    @abstractmethod
+    def read(self, queue_name, message_position): raise NotImplementedError

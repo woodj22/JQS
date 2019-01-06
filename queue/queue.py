@@ -12,10 +12,13 @@ class Queue:
 
         return byte_position
 
-    def read_top_message_from_queue(self, queue_name, message):
-        pass
+    def read_top_message_from_queue(self, queue_name):
+        byte_position = self.read_queue_byte_position_from_file(queue_name)
 
-    def write_queue_byte_position_to_file(self, queue_name, byte_position):
+        return self.file_adaptor.read(queue_name, byte_position)
+
+    @staticmethod
+    def write_queue_byte_position_to_file(queue_name, byte_position):
         key = 'storage/queue_positions.json'
         with open(key, 'r+') as f:
             data = json.load(f)
@@ -26,7 +29,8 @@ class Queue:
             f.close()
         return True
 
-    def read_queue_byte_position_to_file(self, queue_name):
+    @staticmethod
+    def read_queue_byte_position_from_file(queue_name):
         key = 'storage/queue_positions.json'
         with open(key, 'r+') as f:
             data = json.load(f)

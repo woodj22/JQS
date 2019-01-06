@@ -27,6 +27,7 @@ class LocalFileSystem(FileInterface):
             line = file.readline()
             # exit(line)
             file.close()
+        return line
 
     def queue_storage_key(self, queue_name):
         return os.path.join(self.base_file_path, queue_name + ".txt")

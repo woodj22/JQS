@@ -21,7 +21,9 @@ def test_queue_can_store_a_message_as_encoded_json_and_byte_position():
     filesystem = LocalFileSystem('storage')
 
     byte_position = Queue(filesystem).append_message_to_queue(queue_name, message)
+
     file_path = filesystem.queue_storage_key(queue_name)
+
     file_exists = os.path.isfile(file_path)
 
     assert file_exists is True
@@ -39,8 +41,9 @@ def test_queue_can_store_a_message_as_encoded_json_and_byte_position():
 
 
 def test_queue_can_read_a_message_from_file_and_return_message():
+
     message = {
-        'body': 'test body',
+        'body': 'New test read message',
         'retries': 0,
         'created_at': "now"
     }
@@ -48,6 +51,8 @@ def test_queue_can_read_a_message_from_file_and_return_message():
 
     filesystem = LocalFileSystem('storage')
 
-    message_info = Queue(filesystem).read_top_message_from_queue(queue_name, message)
+    Queue(filesystem).append_message_to_queue(queue_name, message)
 
-    filesystem = LocalFileSystem('storage')
+    actual_message = Queue(filesystem).read_top_message_from_queue(queue_name)
+
+    assert message == json.loads(actual_message)
