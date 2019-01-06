@@ -11,11 +11,8 @@ def clean_up_test_message(file_path):
 
 def test_queue_can_store_a_message_as_encoded_json_and_byte_position():
 
-    message = {
-        'body': 'test body',
-        'retries': 0,
-        'created_at': "now"
-    }
+    message = 'This is a test message'
+
     queue_name = 'test-queue'
 
     filesystem = LocalFileSystem('storage')
@@ -33,7 +30,7 @@ def test_queue_can_store_a_message_as_encoded_json_and_byte_position():
         line = file.readline()
         assert type(line) == str
 
-        saved_message = json.loads(line)
+        saved_message = json.loads(json.loads(line)['body'])
 
         assert message == saved_message
 
