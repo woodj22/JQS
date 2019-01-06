@@ -16,27 +16,18 @@ class LocalFileSystem(FileInterface):
             json.dump(content, file)
             file.write("\n")
             file.write("\n")
-        self.write_queue_byte_position_to_file(queue_name, byte_position)
+            file.close()
 
-        return key
+        return queue_name, byte_position
 
-    def show(self, queue_name, byte_position):
+    def read(self, queue_name, byte_position):
         key = os.path.join(self.base_file_path, queue_name + ".txt")
         with open(key, 'r+') as file:
             file.seek(byte_position)
             line = file.readline()
-            exit(line)
+            # exit(line)
             file.close()
 
-    def write_queue_byte_position_to_file(self, queue_name, byte_position):
-        key = os.path.join(self.base_file_path, "queue_positions.json")
-        with open(key, 'r+') as f:
-            data = json.load(f)
-            data[queue_name] = byte_position
-            f.seek(0)
-            json.dump(data, f, indent=4)
-            f.truncate()
-        return True
 
     @property
     def base_file_path(self):
