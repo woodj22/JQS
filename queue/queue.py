@@ -1,4 +1,3 @@
-import json
 from .filesystem import FileSystemInterface
 
 
@@ -13,6 +12,9 @@ class Queue:
 
     def read_top_message_from_queue(self, queue_name):
         current_byte_position = self.file_adaptor.read_queue_position(queue_name)
+
+        if current_byte_position is False:
+            return ''
 
         message, next_byte_position = self.file_adaptor.read(queue_name, current_byte_position)
 

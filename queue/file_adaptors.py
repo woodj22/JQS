@@ -1,4 +1,3 @@
-import time
 import json
 from .filesystem import FileSystemInterface
 import os
@@ -57,7 +56,7 @@ class LocalFileSystem(FileSystemInterface):
             data = json.load(f)
 
             if queue_name not in data:
-                return self.store_queue_position(queue_name, 0)
+                return False
 
             byte_position = data[queue_name]
 

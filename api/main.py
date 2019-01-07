@@ -1,5 +1,4 @@
 from queue.queue import Queue
-
 from flask import Flask
 from flask import request
 

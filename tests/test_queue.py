@@ -4,12 +4,6 @@ import os
 import json
 
 
-def clean_up_test_message(file_path):
-    if os.path.exists(file_path):
-        return os.remove(file_path)
-    return False
-
-
 def test_clear_queue_can_lower_position_to_zero_and_clear_queue_file():
     queue_name = 'test-queue'
 
