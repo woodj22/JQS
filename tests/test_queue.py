@@ -50,7 +50,7 @@ def test_queue_can_store_a_message_as_encoded_json_and_byte_position():
         file.close()
 
 
-def test_queue_can_read_a_message_from_file_and_return_message():
+def test_queue_can_read_a_message_from_file_with_correct_json_and_increments_message_position():
     message = 'New test read message'
 
     queue_name = 'test-queue'
@@ -58,10 +58,13 @@ def test_queue_can_read_a_message_from_file_and_return_message():
     filesystem = LocalFileSystem('storage')
     queue = Queue(filesystem)
 
-    queue.clear_queue(queue_name
-                      )
+    queue.clear_queue(queue_name)
+
     queue.append_message_to_queue(queue_name, message)
+    current_position2 = queue.append_message_to_queue(queue_name, message)
 
     actual_message = queue.read_top_message_from_queue(queue_name)
+
+    assert filesystem.read_queue_position(queue_name) == current_position2
 
     assert message == json.loads(json.loads(actual_message)['body'])

@@ -5,10 +5,10 @@ class FileSystemInterface:
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def store(self, queue_name, content): raise NotImplementedError
+    def store_message(self, queue_name, content): raise NotImplementedError
 
     @abstractmethod
-    def read(self, queue_name, message_position): raise NotImplementedError
+    def read_message(self, queue_name, message_position): raise NotImplementedError
 
     @abstractmethod
     def store_queue_position(self, queue_name, message_position): raise NotImplementedError

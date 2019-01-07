@@ -10,7 +10,7 @@ class LocalFileSystem(FileSystemInterface):
         self._base_file_path = base_file_path
         self._queue_position_file_key = os.path.join(self.base_file_path, 'queue_positions.json')
 
-    def store(self, queue_name, content_body):
+    def store_message(self, queue_name, content_body):
         key = self.queue_storage_key(queue_name)
 
         with open(key, 'a+') as file:
@@ -22,7 +22,7 @@ class LocalFileSystem(FileSystemInterface):
 
         return queue_name, byte_position
 
-    def read(self, queue_name, byte_position):
+    def read_message(self, queue_name, byte_position):
         key = self.queue_storage_key(queue_name)
         with open(key, 'r+') as file:
             file.seek(byte_position)

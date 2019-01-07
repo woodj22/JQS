@@ -6,7 +6,7 @@ class Queue:
         self._file_adaptor = file_adaptor
 
     def append_message_to_queue(self, queue_name, message):
-        queue_name, byte_position = self.file_adaptor.store(queue_name, message)
+        queue_name, byte_position = self.file_adaptor.store_message(queue_name, message)
 
         return byte_position
 
@@ -16,7 +16,7 @@ class Queue:
         if current_byte_position is False:
             return ''
 
-        message, next_byte_position = self.file_adaptor.read(queue_name, current_byte_position)
+        message, next_byte_position = self.file_adaptor.read_message(queue_name, current_byte_position)
 
         self.file_adaptor.store_queue_position(queue_name, next_byte_position)
 
