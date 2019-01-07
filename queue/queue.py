@@ -20,6 +20,12 @@ class Queue:
 
         return message
 
+    def clear_queue(self, queue_name):
+        self.file_adaptor.clear_queue_store(queue_name)
+        self.file_adaptor.store_queue_position(queue_name, 0)
+
+        return True
+
     @property
     def file_adaptor(self):
         return self._file_adaptor
@@ -27,3 +33,4 @@ class Queue:
     @file_adaptor.setter
     def file_adaptor(self, value):
         self._file_adaptor = value
+

@@ -3,14 +3,33 @@ from queue.queue import Queue
 import os
 import json
 
+
 def clean_up_test_message(file_path):
     if os.path.exists(file_path):
         return os.remove(file_path)
     return False
 
 
-def test_queue_can_store_a_message_as_encoded_json_and_byte_position():
+def test_clear_queue_can_lower_position_to_zero_and_clear_queue_file():
+    queue_name = 'test-queue'
 
+    filesystem = LocalFileSystem('storage')
+    byte_position_file_key = filesystem.queue_position_file_key
+    queue_storage_key = filesystem.queue_storage_key(queue_name)
+
+    Queue(filesystem).clear_queue(queue_name)
+
+    with open(byte_position_file_key, 'r') as f:
+        data = json.load(f)
+
+        byte_position = data[queue_name]
+        assert byte_position == 0
+        f.close()
+
+    assert os.path.getsize(queue_storage_key) == 0
+
+
+def test_queue_can_store_a_message_as_encoded_json_and_byte_position():
     message = 'This is a test message'
 
     queue_name = 'test-queue'
@@ -38,18 +57,17 @@ def test_queue_can_store_a_message_as_encoded_json_and_byte_position():
 
 
 def test_queue_can_read_a_message_from_file_and_return_message():
+    message = 'New test read message'
 
-    message = {
-        'body': 'New test read message',
-        'retries': 0,
-        'created_at': "now"
-    }
     queue_name = 'test-queue'
 
     filesystem = LocalFileSystem('storage')
+    queue = Queue(filesystem)
 
-    Queue(filesystem).append_message_to_queue(queue_name, message)
+    queue.clear_queue(queue_name
+                      )
+    queue.append_message_to_queue(queue_name, message)
 
-    actual_message = Queue(filesystem).read_top_message_from_queue(queue_name)
+    actual_message = queue.read_top_message_from_queue(queue_name)
 
-    assert message == json.loads(actual_message)
+    assert message == json.loads(json.loads(actual_message)['body'])

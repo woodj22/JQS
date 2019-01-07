@@ -6,6 +6,7 @@ from .message import make_message
 
 
 class LocalFileSystem(FileSystemInterface):
+
     def __init__(self, base_file_path):
         self._base_file_path = base_file_path
         self._queue_position_file_key = os.path.join(self.base_file_path, 'queue_positions.json')
@@ -61,6 +62,10 @@ class LocalFileSystem(FileSystemInterface):
             byte_position = data[queue_name]
 
         return byte_position
+
+    def clear_queue_store(self, queue_name):
+        queue_file_key = self.queue_storage_key(queue_name)
+        open(queue_file_key, 'w').close()
 
     @property
     def queue_position_file_key(self):

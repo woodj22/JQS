@@ -15,3 +15,6 @@ class FileSystemInterface:
 
     @abstractmethod
     def read_queue_position(self, queue_name): raise NotImplementedError
+
+    @abstractmethod
+    def clear_queue_store(self, queue_name): raise NotImplementedError
