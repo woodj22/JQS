@@ -62,7 +62,7 @@ def test_queue_can_read_a_message_from_file_with_correct_json_increments_message
 
     queue.append_message_to_queue(queue_name, message)
 
-    actual_message, in_flight_position, next_byte_position = queue.read_top_message_from_queue(queue_name)
+    in_flight_position, actual_message, next_byte_position = queue.read_top_message_from_queue(queue_name)
 
     assert message == json.loads(json.loads(actual_message)['body'])
 

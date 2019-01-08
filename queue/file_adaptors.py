@@ -86,11 +86,3 @@ class LocalFileSystem(FileSystemInterface):
     @base_file_path.setter
     def base_file_path(self, value):
         self._base_file_path = value
-    #
-    # # def store_in_flight_message
-    # def mark_message_as_in_flight(self, queue_name, position):
-    #     message = self.read_message(queue_name, position)
-    #     # exit(os.path.join('in_flight', queue_name))
-    #     content, byte_position = self.store_message(os.path.join('in_flight', queue_name), message)
-    #
-    #     return byte_position

@@ -19,7 +19,7 @@ def test_it_can_read_message_from_a_byte_position_and_return_message_and_byte_po
 
     filesystem = LocalFileSystem('storage')
     message_body = 'This is the content body'
-    queue_name, byte_position = filesystem.store_message('test-queue', message_body)
+    byte_position, queue_name = filesystem.store_message('test-queue', message_body)
 
     next_byte_position, actual_message = filesystem.read_message('test-queue', byte_position)
     message_length = len(actual_message.encode('UTF-8'))

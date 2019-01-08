@@ -29,7 +29,7 @@ class Queue:
 
         self.file_adaptor.store_queue_position(queue_name, next_byte_position)
 
-        return read_message, in_flight_position, next_byte_position
+        return in_flight_position, read_message, next_byte_position
 
     def clear_queue(self, queue_name):
         self.file_adaptor.clear_queue_store(queue_name)

@@ -18,7 +18,7 @@ def handle_queue(queue_name):
 
         return "OK"
     else:
-        actual_message = Queue(filesystem).read_top_message_from_queue(queue_name)
+        in_flight_position, message = Queue(filesystem).read_top_message_from_queue(queue_name)
 
-        return actual_message
+        return in_flight_position, message
 
