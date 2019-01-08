@@ -1,7 +1,6 @@
 import json
 from .filesystem import FileSystemInterface
 import os
-from .message import make_message
 
 
 class LocalFileSystem(FileSystemInterface):
@@ -10,17 +9,20 @@ class LocalFileSystem(FileSystemInterface):
         self._base_file_path = base_file_path
         self._queue_position_file_key = os.path.join(self.base_file_path, 'queue_positions.json')
 
-    def store_message(self, queue_name, content_body):
+    def store_message(self, queue_name, content):
         key = self.queue_storage_key(queue_name)
+        os.makedirs(os.path.dirname(key), exist_ok=True)
 
         with open(key, 'a+') as file:
             byte_position = file.tell()
-            content = make_message(json.dumps(content_body))
+
             json.dump(content, file)
+
             file.write("\n")
+
             file.close()
 
-        return queue_name, byte_position
+        return byte_position, content
 
     def read_message(self, queue_name, byte_position):
         key = self.queue_storage_key(queue_name)
@@ -34,7 +36,7 @@ class LocalFileSystem(FileSystemInterface):
             next_byte_position = file.tell()
 
             file.close()
-        return line, next_byte_position
+        return next_byte_position, line
 
     def store_queue_position(self, queue_name, byte_position):
         key = self.queue_position_file_key
@@ -84,3 +86,11 @@ class LocalFileSystem(FileSystemInterface):
     @base_file_path.setter
     def base_file_path(self, value):
         self._base_file_path = value
+    #
+    # # def store_in_flight_message
+    # def mark_message_as_in_flight(self, queue_name, position):
+    #     message = self.read_message(queue_name, position)
+    #     # exit(os.path.join('in_flight', queue_name))
+    #     content, byte_position = self.store_message(os.path.join('in_flight', queue_name), message)
+    #
+    #     return byte_position

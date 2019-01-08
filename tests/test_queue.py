@@ -30,7 +30,7 @@ def test_queue_can_store_a_message_as_encoded_json_and_byte_position():
 
     filesystem = LocalFileSystem('storage')
 
-    byte_position = Queue(filesystem).append_message_to_queue(queue_name, message)
+    byte_position, content = Queue(filesystem).append_message_to_queue(queue_name, message)
 
     file_path = filesystem.queue_storage_key(queue_name)
 
@@ -50,21 +50,39 @@ def test_queue_can_store_a_message_as_encoded_json_and_byte_position():
         file.close()
 
 
-def test_queue_can_read_a_message_from_file_with_correct_json_and_increments_message_position():
+def test_queue_can_read_a_message_from_file_with_correct_json_increments_message_position_and_copy_to_in_flight():
     message = 'New test read message'
 
     queue_name = 'test-queue'
 
     filesystem = LocalFileSystem('storage')
     queue = Queue(filesystem)
-
+    position_file_key = filesystem.queue_position_file_key
     queue.clear_queue(queue_name)
 
     queue.append_message_to_queue(queue_name, message)
-    current_position2 = queue.append_message_to_queue(queue_name, message)
 
-    actual_message = queue.read_top_message_from_queue(queue_name)
-
-    assert filesystem.read_queue_position(queue_name) == current_position2
+    actual_message, in_flight_position, next_byte_position = queue.read_top_message_from_queue(queue_name)
 
     assert message == json.loads(json.loads(actual_message)['body'])
+
+    in_flight_key = filesystem.queue_storage_key(os.path.join('in_flight', queue_name))
+    # Assert message in in_flight/{test-queue} file
+    with open(in_flight_key, 'r') as file:
+
+        file.seek(in_flight_position)
+
+        message = file.readline()
+
+        assert actual_message == message
+
+    # Assert new position stored
+    with open(position_file_key, 'r') as file:
+
+        data = json.load(file)
+
+        if queue_name not in data:
+            return False
+        file.close()
+        byte_position = data[queue_name]
+        assert byte_position == next_byte_position
