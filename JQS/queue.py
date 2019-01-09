@@ -18,9 +18,6 @@ class Queue:
     def read_top_message_from_queue(self, queue_name):
         current_byte_position = self.file_adaptor.read_queue_position(queue_name)
 
-        if current_byte_position is False:
-            return ''
-
         next_byte_position, read_message = self.file_adaptor.read_message(queue_name, current_byte_position)
 
         processing_queue = self.in_flight_queue_name(queue_name)

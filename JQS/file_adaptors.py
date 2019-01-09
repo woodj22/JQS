@@ -31,7 +31,7 @@ class LocalFileSystem(FileSystemInterface):
             line = file.readline()
 
             if line is '':
-                return '', byte_position
+                return byte_position, json.dumps('')
 
             next_byte_position = file.tell()
 
@@ -56,7 +56,7 @@ class LocalFileSystem(FileSystemInterface):
 
         with open(key, 'r') as f:
             data = json.load(f)
-
+            f.close()
             if queue_name not in data:
                 return False
 

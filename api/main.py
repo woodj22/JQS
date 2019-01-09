@@ -1,6 +1,7 @@
 from JQS.queue import Queue
 from flask import Flask
 from flask import request
+import json
 
 from JQS.file_adaptors import LocalFileSystem
 
@@ -18,9 +19,16 @@ def handle_queue(queue_name):
 
         return "OK"
     else:
-        in_flight_position, message = Queue(filesystem).read_top_message_from_queue(queue_name)
+        in_flight_position, message, byte_message = Queue(filesystem).read_top_message_from_queue(queue_name)
 
-        return in_flight_position, message
+        message_object = json.loads(message)
+        if message_object == '':
+
+            return ''
+
+        message_object['id'] = in_flight_position
+
+        return json.dumps(message_object)
 
 # GET /JQS/<queue_name>/
 # Returns ?paginated? list of in_flight and To-Do jobs
