@@ -1,13 +1,13 @@
-from queue.queue import Queue
+from JQS.queue import Queue
 from flask import Flask
 from flask import request
 
-from queue.file_adaptors import LocalFileSystem
+from JQS.file_adaptors import LocalFileSystem
 
 app = Flask(__name__)
 
 
-@app.route('/jqs/<queue_name>', methods=['GET', 'POST'])
+@app.route('/JQS/<queue_name>/messages', methods=['GET', 'POST'])
 def handle_queue(queue_name):
     filesystem = LocalFileSystem('storage')
 
@@ -21,4 +21,18 @@ def handle_queue(queue_name):
         in_flight_position, message = Queue(filesystem).read_top_message_from_queue(queue_name)
 
         return in_flight_position, message
+
+# GET /JQS/<queue_name>/
+# Returns ?paginated? list of in_flight and To-Do jobs
+
+# POST /JQS/<queue_name>/messages{in_flight_position}/completed
+# Returns True if message is there.
+# Deletes message from in_flight JQS
+
+# POST /JQS/<queue_name>/messages{in_flight_position}/failed
+# Returns job failed If count == 0.
+# Deletes message from processing JQS.
+#
+# Returns job retried if count > 0.
+# Copy message back to To-Do JQS
 

@@ -1,11 +1,11 @@
-from queue.file_adaptors import LocalFileSystem
-from queue.queue import Queue
+from JQS.file_adaptors import LocalFileSystem
+from JQS.queue import Queue
 import os
 import json
 
 
 def test_clear_queue_can_lower_position_to_zero_and_clear_queue_file():
-    queue_name = 'test-queue'
+    queue_name = 'test-JQS'
 
     filesystem = LocalFileSystem('storage')
     byte_position_file_key = filesystem.queue_position_file_key
@@ -26,7 +26,7 @@ def test_clear_queue_can_lower_position_to_zero_and_clear_queue_file():
 def test_queue_can_store_a_message_as_encoded_json_and_byte_position():
     message = 'This is a test message'
 
-    queue_name = 'test-queue'
+    queue_name = 'test-JQS'
 
     filesystem = LocalFileSystem('storage')
 
@@ -53,7 +53,7 @@ def test_queue_can_store_a_message_as_encoded_json_and_byte_position():
 def test_queue_can_read_a_message_from_file_with_correct_json_increments_message_position_and_copy_to_in_flight():
     message = 'New test read message'
 
-    queue_name = 'test-queue'
+    queue_name = 'test-JQS'
 
     filesystem = LocalFileSystem('storage')
     queue = Queue(filesystem)
@@ -67,7 +67,7 @@ def test_queue_can_read_a_message_from_file_with_correct_json_increments_message
     assert message == json.loads(json.loads(actual_message)['body'])
 
     in_flight_key = filesystem.queue_storage_key(os.path.join('in_flight', queue_name))
-    # Assert message in in_flight/{test-queue} file
+    # Assert message in in_flight/{test-JQS} file
     with open(in_flight_key, 'r') as file:
 
         file.seek(in_flight_position)

@@ -1,4 +1,4 @@
-from queue.message import make_message
+from JQS.message import make_message
 
 
 def test_it_can_make_message():

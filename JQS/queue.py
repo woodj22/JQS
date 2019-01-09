@@ -1,4 +1,4 @@
-from queue.message import make_message
+from JQS.message import make_message
 from .filesystem import FileSystemInterface
 import json
 import os
