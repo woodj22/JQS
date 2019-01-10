@@ -1,11 +1,11 @@
 from JQS.message import make_message
-from .filesystem import FileSystemInterface
+from .filesystem import StorageInterface
 import json
 import os
 
 
 class Queue:
-    def __init__(self, file_adaptor: FileSystemInterface):
+    def __init__(self, file_adaptor: StorageInterface):
         self._file_adaptor = file_adaptor
 
     def append_message_to_queue(self, queue_name, content_body):
@@ -34,6 +34,13 @@ class Queue:
 
         return True
 
+    def message_has_completed(self, queue_name, position):
+        self.file_adaptor.delete_message(self.in_flight_queue_name(queue_name), position)
+        return True
+
+    def message_has_failed(self, queue_name, position):
+        pass
+
     @staticmethod
     def in_flight_queue_name(queue_name):
         return os.path.join('in_flight', queue_name)
@@ -45,4 +52,3 @@ class Queue:
     @file_adaptor.setter
     def file_adaptor(self, value):
         self._file_adaptor = value
-

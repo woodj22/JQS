@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-class FileSystemInterface:
+class StorageInterface:
     __metaclass__ = ABCMeta
 
     @abstractmethod
@@ -9,6 +9,9 @@ class FileSystemInterface:
 
     @abstractmethod
     def read_message(self, queue_name, message_position): raise NotImplementedError
+
+    @abstractmethod
+    def delete_message(self, queue_name, message_position): raise NotImplementedError
 
     @abstractmethod
     def store_queue_position(self, queue_name, message_position): raise NotImplementedError

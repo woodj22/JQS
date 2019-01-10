@@ -1,12 +1,14 @@
 import json
-from .filesystem import FileSystemInterface
+from .filesystem import StorageInterface
 import os
 
 
-class LocalFileSystem(FileSystemInterface):
+class LocalFileSystem(StorageInterface):
+
 
     def __init__(self, base_file_path):
         self._base_file_path = base_file_path
+
         self._queue_position_file_key = os.path.join(self.base_file_path, 'queue_positions.json')
 
     def store_message(self, queue_name, content):
@@ -37,6 +39,23 @@ class LocalFileSystem(FileSystemInterface):
 
             file.close()
         return next_byte_position, line
+
+    def delete_message(self, queue_name, message_position):
+        key = self.queue_storage_key(queue_name)
+        with open(key, 'r+b') as file:
+            file.seek(message_position)
+            file.readline()
+            next_message_position = file.tell()
+
+            file.seek(message_position)
+
+            bytes_to_change = next_message_position - message_position - 1
+
+            write_string = (' ' * bytes_to_change) + "\n"
+
+            file.write(write_string.encode('utf8'))
+
+        return True
 
     def store_queue_position(self, queue_name, byte_position):
         key = self.queue_position_file_key
