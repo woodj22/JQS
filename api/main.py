@@ -43,6 +43,7 @@ def update_message_status(queue_name, message_id):
         return 'completed'
 
     elif action == 'failed':
+        jqs.message_has_failed(queue_name, int(message_id))
         return 'failed'
     return 'hello world'
 
