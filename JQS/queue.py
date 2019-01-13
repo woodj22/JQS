@@ -9,6 +9,12 @@ class Queue:
         self._file_adaptor = file_adaptor
 
     def append_message_to_queue(self, queue_name, content_body):
+        """
+        Creates a message by encoding the content and storing it in the queue.
+        :param queue_name: str
+        :param content_body: obj
+        :return: set (position, message content)
+        """
         message = make_message(json.dumps(content_body))
 
         byte_position, content = self.file_adaptor.store_message(queue_name, message)
@@ -16,6 +22,12 @@ class Queue:
         return byte_position, content
 
     def read_top_message_from_queue(self, queue_name):
+        """
+        Read the next message from the queue. This will add the message into the in flight queue
+        and move the next available message position to the next message.
+        :param queue_name:  str
+        :return: set(in flight position, message, next position)
+        """
         current_byte_position = self._file_adaptor.read_queue_position(queue_name)
 
         next_byte_position, read_message = self._file_adaptor.read_message(queue_name, current_byte_position)
@@ -29,12 +41,23 @@ class Queue:
         return in_flight_position, read_message, next_byte_position
 
     def clear_queue(self, queue_name):
+        """
+        Delete all messages from the queue and reset the queue position to 0
+        :param queue_name: str
+        :return: True
+        """
         self._file_adaptor.clear_queue_store(queue_name)
         self._file_adaptor.store_queue_position(queue_name, 0)
 
         return True
 
     def message_has_completed(self, queue_name, position):
+        """
+        Mark a message as completed by deleting it from the in flight queue
+        :param queue_name:
+        :param position:
+        :return:
+        """
         self._file_adaptor.delete_message(self.in_flight_queue_name(queue_name), position)
 
         return True

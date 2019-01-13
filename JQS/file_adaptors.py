@@ -5,7 +5,6 @@ import os
 
 class LocalFileSystem(StorageInterface):
 
-
     def __init__(self, base_file_path):
         self._base_file_path = base_file_path
 
