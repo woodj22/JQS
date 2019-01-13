@@ -48,24 +48,23 @@ class Queue:
         :return: bool
         """
         in_flight_queue_name = self.in_flight_queue_name(queue_name)
-        byte_position, message = self._file_adaptor.read_message(in_flight_queue_name, position)
+        next_byte_position, message = self._file_adaptor.read_message(in_flight_queue_name, position)
+
         try:
+            # Check message is json and has not already been deleted from in flight
             message_dict = json.loads(message)
-            if 'retries' in message_dict:
-                if message_dict['retries'] == 0:
-                    return False
-
-                message_dict['retries'] -= 1
-
-                self._file_adaptor.delete_message(in_flight_queue_name, position)
-                self._file_adaptor.store_message(queue_name, message_dict)
-
-                return True
-
         except ValueError:
             return False
 
-    # Check retry count if not zero minus 1 and retry. else return false
+        if 'retries' in message_dict:
+            self._file_adaptor.delete_message(in_flight_queue_name, position)
+            if message_dict['retries'] == 0:
+                return False
+
+            message_dict['retries'] -= 1
+            self._file_adaptor.store_message(queue_name, message_dict)
+
+            return True
 
     @staticmethod
     def in_flight_queue_name(queue_name):
