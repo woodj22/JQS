@@ -22,7 +22,10 @@ The three goals are:
 
 A queue is represented by a single file. A message is stored by saving a new line in the file. The new line is encoded in JSON format.
 When a message is read, the first message with be at byte position 0. This then read and the byte positio of the next line is stored in a central file. 
+
 When another message is read, it will get the next message from the byte position that is saved. 
 When the message is read, the message is saved in an in_flight queue represented by another file. This means the file can be read ad all the processing messages can be viewed in that one file. 
+
 When this message has finished be worked on, The message is deleted as it is uniquely identified by the byte position that is returned from when it is saved. 
+
 If the job fails, it is pushed back onto the TODO queue. The retry value is evaluated to determine if it fails or is retried.
