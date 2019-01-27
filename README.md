@@ -1,5 +1,5 @@
 # JQS
-A queue interface and filer driver that stores messages in JSON.
+A queue interface and filer driver that stores messages in JSON. It also includes a small flask server i used to mimic how it would work as as a service similier to SQS. 
 
 ### Introduction
 I use the AWS SQS all the time for queues. I thought i would take a deeper dive into how queues really work by building one myself as well as improving my code quality. 
