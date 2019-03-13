@@ -1,10 +1,10 @@
 # JQS
-A queue interface and filer driver that stores messages in JSON. It also includes a small flask server i used to mimic how it would work as as a service similier to SQS. 
+A queue interface and filer driver that stores messages in JSON format.
 
 ### Introduction
-I use the AWS SQS all the time for queues. I thought i would take a deeper dive into how queues really work by building one myself as well as improving my code quality. 
-I undertook this project while reading the philosphy of software design by john ousterhout. This talks about techniques that can be used to reduce complexity. 
-What he believes is a measure of how good a system is. 
+I use AWS's SQS all the time so why not take a deeper dive into how queues really work by building one myself. 
+
+I undertook this project while reading the philosphy of software design by john ousterhout. This talks about techniques that can be used to reduce complexity. What he believes is a measure of how good a system is. 
 
 As a side project, below are the three goals that i set out that i believed would help me improve my understanding.
 
@@ -20,7 +20,7 @@ The three goals are:
 
 ### How the filesystem queue driver works
 
-A queue is represented by a single file. A message is stored by saving a new line in the file. The new line is encoded in JSON format.
+A queue is represented by a single file. A message is stored by saving a new line in the file. That new line is encoded in JSON format.
 When a message is read, the first message with be at byte position 0. This then read and the byte positio of the next line is stored in a central file. 
 
 When another message is read, it will get the next message from the byte position that is saved. 
